@@ -31,9 +31,9 @@ FYI `make ssh` command for entering the container bash
 
 Click on `Containers` on the navbar then, select the range you want to receive data from and click `Search`. By default each page has 20 records. Feel free to use paginatio.
 
-<b>2.get specific container information (available in API) by “container_code” using API /api/waste-managment/container-service/
-You can either click on href in `Containers` on `konteinerio_kodas` column or enter `Container` in navigation and type Container Code manually, data is paginated as well
-</b>
+<b>2.get specific container information (available in API) by “container_code” using API /api/waste-managment/container-service/</b>
+You can either click on href in `Containers` on `konteinerio_kodas` column or enter `Container` in navigation and type Container Code manually, data is paginated as well. FYI if container is not found, view stays identical (no info messages about, same with 1st option)
+
 
 
 
