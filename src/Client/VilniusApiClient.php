@@ -4,26 +4,50 @@ declare(strict_types=1);
 
 namespace App\Client;
 
-
 use App\Interfaces\ApiClient;
+use Exception;
 use GuzzleHttp\Client;
-use function GuzzleHttp\Promise\queue;
-use GuzzleHttp\Psr7\Response;
 
 class VilniusApiClient implements ApiClient
 {
+
+    /** @var string $apiUrl */
     protected string $apiUrl;
 
+    /** @var Client $client */
     protected Client $client;
 
+    /**
+     * VilniusApiClient constructor.
+     * @param string $apiUrl
+     */
     public function __construct(string $apiUrl)
     {
         $this->apiUrl = $apiUrl;
         $this->client = new Client();
     }
 
-    public function get(string $path, array $params = []): Response
+    /**
+     * @param string $path
+     * @param array $params
+     * @return array
+     * @throws Exception on non 200 response
+     */
+    public function get(string $path, array $params = []): array
     {
-        $this->client->request('GET', $this->apiUrl . $path, $params);
+        $params['headers'] = [
+            'Accept' => '*/*',
+            'X-CSRF-TOKEN' => '',
+        ];
+
+        $url = $this->apiUrl . $path;
+        $response = $this->client->request('GET', $url, $params);
+
+        if ($response->getStatusCode() === 200) {
+            $responseBody = json_decode((string)$response->getBody(), true);
+            return $responseBody;
+        } else {
+            throw new Exception("Request failed");
+        }
     }
 }

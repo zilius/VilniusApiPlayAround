@@ -1,1 +1,83 @@
 {% extends "base.html.twig" %}
+
+{% block body %}
+
+    <div class="menu">
+        <form class="form-inline" method="get" action="{{ url('container') }}">
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="container_code">Container code:</label>
+                <input class="form-control" id="container_code"
+                       name="container_code" {% if container_code %} value="{{ container_code }}" {% endif %}>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Search</button>
+        </form>
+    </div>
+
+
+    <div class="pagination-container" style="display: flex; flex-direction: column">
+        {% if data is not empty %}
+
+            {% set page_number = (data['to'] / data['per_page'])|round(0,'ceil') %}
+
+            <div>Displaying records from <b>{{ data['from'] }}</b> to <b>{{ data['to'] }}</b> of total
+                <b>{{ data['total'] }} total</b> records
+            </div>
+            <div>Page <b>{{ page_number }}</b> of <b>{{ data['last_page'] }}</b></div>
+            <div>
+                    <span>
+                        <a class="page-step" {% if data['prev_page_url'] %} href="{{ url('container', {'id': container_code, 'page': page_number - 1}) }}" {% endif %}>
+                            <<
+                        </a>
+                    </span>
+                <span>
+                        <a class="page-step" {% if data['next_page_url'] %}  href="{{ url('container', {'id': container_code, 'page': page_number + 1}) }}" {% endif %}>
+                        >>
+                        </a>
+                    </span>
+                <span>
+                        <form class="form-inline" method="get" action="{{ url('container', {'id' : container_code}) }}">
+                            <input id="page" name="page" type="number" value="{{ page_number }}" style="width: 80px">
+                            <button type="submit">GO!</button>
+                        </form>
+                    </span>
+            </div>
+        {% endif %}
+    </div>
+
+
+    {% if data is empty %}
+        <h3>Type container code ant hit search</h3>
+    {% else %}
+        <table class="table table-striped table-bordered table-sm">
+            <thead>
+            <th>konteinerio_id</th>
+            <th>konteinerio_kodas</th>
+            <th>konteinerio_adresas</th>
+            <th>konteinerio_latitude</th>
+            <th>konteinerio_longtitude</th>
+            <th>vezejo_pavadinimas</th>
+            <th>aptarnavimo_data</th>
+            <th>aptarnavimo_svoris</th>
+            <th>aptarnavimo_grafikas</th>
+            <th>konteinerio_aptarnavimas</th>
+            <th>neaptarnavimo_priezastis</th>
+            </thead>
+            {% for container in data['data'] %}
+                <tr>
+                    <td>{{ container['konteinerio_id'] }}</td>
+                    <td>{{ container['konteinerio_kodas'] }}</td>
+                    <td>{{ container['konteinerio_adresas'] }}</td>
+                    <td>{{ container['konteinerio_latitude'] }}</td>
+                    <td>{{ container['konteinerio_longtitude'] }}</td>
+                    <td>{{ container['vezejo_pavadinimas'] }}</td>
+                    <td>{{ container['aptarnavimo_data'] }}</td>
+                    <td>{{ container['aptarnavimo_svoris'] }}</td>
+                    <td>{{ container['aptarnavimo_grafikas'] }}</td>
+                    <td>{{ container['konteinerio_aptarnavimas'] }}</td>
+                    <td>{{ container['neaptarnavimo_priezastis'] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+{% endblock %}

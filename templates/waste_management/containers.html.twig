@@ -1,36 +1,102 @@
 {% extends "base.html.twig" %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 {% endblock %}
 
 {% block body %}
 
-    <form class="form-inline">
-        <div class="form-group mb-2">
-            <label for="vezejo_pavadinimas" class="sr-only">Email</label>
-            <input class="form-control" id="vezejo_pavadinimas">
+    <div class="menu">
+        <form class="form-inline" method="get" action="{{ url('containers') }}">
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="date_range">Date range:</label>
+                <input class="form-control" id="date_range" name="date_range" readonly>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Search</button>
+        </form>
+
+        <div class="pagination-container" style="display: flex; flex-direction: column">
+            {% if containers is not empty %}
+
+                {% set page_number = (containers['to'] / containers['per_page'])|round(0,'ceil') %}
+
+                <div>Displaying records from <b>{{ containers['from'] }}</b> to <b>{{ containers['to'] }}</b> of total
+                    <b>{{ containers['total'] }} total</b> records
+                </div>
+                <div>Page <b>{{ page_number }}</b> of <b>{{ containers['last_page'] }}</b></div>
+                <div>
+                    <span>
+                        <a class="page-step" {% if containers['prev_page_url'] %} href="{{ url('containers', {'date_range': app.request.query.all['date_range'], 'page': page_number - 1}) }}" {% endif %}>
+                            <<
+                        </a>
+                    </span>
+                    <span>
+                        <a class="page-step" {% if containers['next_page_url'] %}  href="{{ url('containers', {'date_range': app.request.query.all['date_range'], 'page': page_number + 1}) }}" {% endif %}>
+                        >>
+                        </a>
+                    </span>
+                    <span>
+                        <form class="form-inline" method="get" action="{{ url('containers') }}">
+                            <input id="page" name="page" type="number" value="{{ page_number }}" style="width: 80px">
+                            <input hidden id="date_range" name="date_range" value="{{ app.request.query.all['date_range'] }}">
+                            <button type="submit">GO!</button>
+                        </form>
+                    </span>
+                </div>
+            {% endif %}
         </div>
-        <div class="form-group mx-sm-3 mb-2">
-            <label for="inputPassword2" class="sr-only">Password</label>
-            <input class="form-control" id="dates" name="dates">
-        </div>
-        <button type="submit" class="btn btn-primary mb-2">Search</button>
-    </form>
+
+    </div>
 
     {% if containers is empty %}
-        <h1>Empty</h1>
+        <h3>Empty (select range and press Search)</h3>
     {% else %}
-        <h1>Non-empty</h1>
+
+        <table class="table table-striped table-bordered table-sm">
+            <thead>
+            <th>konteinerio_id</th>
+            <th>konteinerio_kodas</th>
+            <th>konteinerio_adresas</th>
+            <th>konteinerio_latitude</th>
+            <th>konteinerio_longtitude</th>
+            <th>vezejo_pavadinimas</th>
+            <th>aptarnavimo_data</th>
+            <th>aptarnavimo_svoris</th>
+            <th>aptarnavimo_grafikas</th>
+            <th>konteinerio_aptarnavimas</th>
+            <th>neaptarnavimo_priezastis</th>
+            </thead>
+            {% for container in containers['data'] %}
+                <tr>
+                    <td>{{ container['konteinerio_id'] }}</td>
+                    <td>
+                        <a href="{{ url('container', {'id':container['konteinerio_kodas']}) }}">{{ container['konteinerio_kodas'] }}</a>
+                    </td>
+                    <td>{{ container['konteinerio_adresas'] }}</td>
+                    <td>{{ container['konteinerio_latitude'] }}</td>
+                    <td>{{ container['konteinerio_longtitude'] }}</td>
+                    <td>{{ container['vezejo_pavadinimas'] }}</td>
+                    <td>{{ container['aptarnavimo_data'] }}</td>
+                    <td>{{ container['aptarnavimo_svoris'] }}</td>
+                    <td>{{ container['aptarnavimo_grafikas'] }}</td>
+                    <td>{{ container['konteinerio_aptarnavimas'] }}</td>
+                    <td>{{ container['neaptarnavimo_priezastis'] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
     {% endif %}
 
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        $('input[name="dates"]').daterangepicker({
+
+        $('input[name="date_range"]').daterangepicker({
+            startDate: '{{ range_from }}',
+            endDate: '{{ range_to }}',
             locale: {
-                format: 'YYYY-MM-DD'
+                format: 'YYYY/MM/DD'
             }
         });
     </script>

@@ -8,3 +8,13 @@ body
     margin: 5px auto;
 }
 
+label
+{
+    margin-right: 5px;
+}
+
+.active
+{
+    font-weight: bold;
+}
+
