@@ -36,4 +36,17 @@ You can either click on href in `Containers` on `konteinerio_kodas` column or en
 
 
 
+<h3> Windows instalation </h3>
+
+Prerequisites:
+
+1. XAMPP
+2. Composer
+
+Instalation:
+
+1. Clone the repository `git clone https://github.com/zilius/VilniusApiPlayAround.git` to {xamp-dir}/ (by default it shoud be `C:\xampp\htdocs`)
+2. Install composer dependencies `cd VilniusApiPlayAround` and `composer install`
+3. Open XAMPP and click `Start` on `Apache`
+4. After apache starts visit `http://localhost:8080/VilniusApiPlayAround/public/index.php/` (I use custom 8080 apache port so also try `http://localhost/VilniusApiPlayAround/public/index.php/`)
 
