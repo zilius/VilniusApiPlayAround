@@ -3,14 +3,12 @@
 {% block body %}
 
     <div class="menu">
-        <form class="form-inline" method="get" action="{{ url('container') }}">
             <div class="form-group mx-sm-3 mb-2">
                 <label for="container_code">Container code:</label>
                 <input class="form-control" id="container_code"
                        name="container_code" {% if container_code %} value="{{ container_code }}" {% endif %}>
             </div>
-            <button type="submit" class="btn btn-primary mb-2">Search</button>
-        </form>
+            <button class="btn btn-primary mb-2" id="submit_search">Search</button>
     </div>
 
 
@@ -79,5 +77,18 @@
             {% endfor %}
         </table>
     {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+    $(document).ready(function () {
+        $('#submit_search').on('click', function () {
+            var container_code = $("#container_code").val();
+            window.location.href = "{{ url('container')}}" + `/${container_code}`
+        });
+    });
+</script>
 
 {% endblock %}
